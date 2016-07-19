@@ -37,7 +37,19 @@ An error will be detected if quotes are left unclosed.
 kkita004@hammer.cs.ucr.edu$ echo testing &&     ; echo "will not appear"
 testing
 ```
+* Now supports piping and redirection with < > and |
 
+* Can also append by using >>
+
+* Can chain any number of pipes and redirection at the same time
+
+* Can now change directories using the `cd` command
+
+* Using `cd` by itself will go to home directory
+
+* Using `cd -` will go to previous directory
+
+* If `cd -` is used before any other `cd`, then it will lead to home directory
 ## Dependencies
 Uses the [`boost`](https://www.boost.org) library for trimming and tokenizing.
 Uses `C++11` features.
@@ -59,4 +71,60 @@ Try 'ls --help' for more information.
 echo 'You're it!';
 error: no closing single quotation found
 ```
+<!--- ' -->
 
+* Attempting to use `cd -` without prior changing directories will send you to $HOME.
+
+* Cannot pipe the `cd` command. Doing so will result in `cd` executing and nothing else in the chain of pipes.
+
+* Redirecting input to/from `cd` will result in only the command `cd` executing, as the redirections are removed
+
+# ls
+cs 100 ls
+
+## Building and Running
+```bash
+make
+bin/ls
+```
+
+## Features
+* Accepts multiple directory inputs
+``` bash
+bin/ls dir1, dir2 dir3
+```
+* Adjusts formatting to accomodate file sizes
+* Accepts 3 flags, -a, -l, and -R in any combination
+```bash
+$ bin/ls -laR
+$ bin/ls -Ral
+$ bin/ls -R -a -l
+
+```
+Will all result in the same output
+* Outputs almost exactly like standard ls
+
+## Dependencies
+Uses the [`boost`](https://www.boost.org) library for trimming and tokenizing.
+Uses `C++11` features.
+Requries a Unix machine.
+
+## Known Bugs and Limitations
+* Does not accept files as input, only directories
+```bash
+$ touch foo
+$ bin/ls foo
+```
+* Cannot bring back the dead
+* Redirection must have the program name come first
+``` bash
+$ < in cat > out
+Will result in error
+```
+* Redirection does not support output redirection before a pipe
+``` bash
+$ cat < in > out | wc
+Will result in error
+```
+* Redirection does not support file descriptors (e.g. 2>)
+* Redirection does support string redirection (e.g. <<<)
